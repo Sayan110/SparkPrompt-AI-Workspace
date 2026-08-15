@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SparkPrompt turns rough ideas into clear, detailed, ready-to-use prompts." />
+    <title>SparkPrompt — Make every prompt brilliant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+      <div class="login-showcase">
+        <a class="brand login-brand" href="#" aria-label="SparkPrompt home"><span class="brand-mark"><span>✦</span></span><span>Spark<span>Prompt</span></span></a>
+        <div class="login-message">
+          <span class="eyebrow"><span class="pulse-dot"></span> A SMALLER, SMARTER WORKDAY</span>
+          <h1>Your everyday<br /><em>AI workspace.</em></h1>
+          <p>Turn ideas into strong prompts, clearer writing, useful summaries, thoughtful emails, and more.</p>
+        </div>
+        <div class="login-benefits">
+          <div><span>✦</span><p><strong>Prompt magic</strong><small>Make every instruction clearer</small></p></div>
+          <div><span>⌁</span><p><strong>Useful shortcuts</strong><small>Draft, explain, summarize, brainstorm</small></p></div>
+          <div><span>⌘</span><p><strong>Private by default</strong><small>Your work stays in this browser</small></p></div>
+        </div>
+      </div>
+      <div class="login-form-area">
+        <form class="login-card" id="loginForm">
+          <div class="login-card-top"><span class="login-mini-mark">✦</span><span>WELCOME IN</span></div>
+          <h2 id="loginTitle">Let’s make good work feel easier.</h2>
+          <p>Use any email and password to create your local workspace.</p>
+          <label for="loginEmail">Email address</label>
+          <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" required />
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="At least 4 characters" minlength="4" autocomplete="current-password" required />
+          <label class="remember-row"><input id="rememberMe" type="checkbox" checked /><span>Remember me on this device</span></label>
+          <button class="login-button" type="submit"><span>✦</span> Enter SparkPrompt</button>
+          <div class="login-divider"><span>or</span></div>
+          <button class="guest-button" id="guestButton" type="button">Continue as a guest <span>→</span></button>
+          <small class="login-safety">⌁ This is a local demo login. No password is saved or sent anywhere.</small>
+          <div class="author-credit"><span>CREATED BY</span><strong>Sayan Deb Nath</strong><small>BTech CSE — AI &amp; ML</small><a href="mailto:SHAYANDNATH0@gmail.com">SHAYANDNATH0@gmail.com</a></div>
+        </form>
+      </div>
+    </section>
+    <div class="app-shell" id="appShell" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="SparkPrompt home"><span class="brand-mark"><span>✦</span></span><span>Spark<span>Prompt</span></span></a>
+        <nav class="side-nav" aria-label="Main navigation">
+          <a class="nav-link" href="#tools"><span>✦</span> Quick AI tools</a>
+          <a class="nav-link active" href="#composer"><span>⌘</span> Magic Studio</a>
+          <a class="nav-link" href="#templates"><span>◇</span> Prompt recipes</a>
+          <a class="nav-link" href="#history"><span>◷</span> Recent sparks</a>
+        </nav>
+        <div class="sidebar-note"><span class="tiny-spark">✦</span><p>Great prompts start with a rough thought.</p><span>We handle the rest.</span></div>
+        <div class="sidebar-footer">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="toggle-icon">☾</span><span>Dark mode</span><span class="toggle-track"><i></i></span></button>
+          <div class="made-by"><span class="avatar" id="userInitial">G</span><span id="userName">Guest</span><span class="local-user">local workspace</span></div>
+          <button class="logout-button" id="logoutButton" type="button">↳ Sign out</button>
+          <div class="sidebar-author"><strong>Sayan Deb Nath</strong><span>BTech CSE — AI &amp; ML</span><a href="mailto:SHAYANDNATH0@gmail.com">SHAYANDNATH0@gmail.com</a></div>
+        </div>
+      </aside>
+      <main>
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation">☰</button>
+          <div class="crumb"><span>Magic Studio</span><span class="crumb-dot">•</span><span>Prompt enhancer</span></div>
+          <div class="top-actions"><button class="icon-button" id="helpButton" type="button" aria-label="How it works" title="How it works">?</button><button class="new-prompt" id="newPrompt" type="button"><span>＋</span> New prompt</button></div>
+        </header>
+        <section class="hero" id="composer">
+          <div class="eyebrow"><span class="pulse-dot"></span> YOUR IDEA, SUPERCHARGED</div>
+          <h1>Turn a rough thought into<br /><em>a remarkable prompt.</em></h1>
+          <p class="hero-copy">Describe what you need in everyday language. SparkPrompt adds the context, structure, and detail that great AI responses need.</p>
+        </section>
+        <section class="workspace" aria-label="Prompt generator">
+          <div class="input-card">
+            <div class="card-heading"><div><span class="step-number">01</span><h2>What do you want to create?</h2></div><span class="required">Your rough idea</span></div>
+            <label class="sr-only" for="roughPrompt">Describe your idea</label>
+            <div class="textarea-wrap"><textarea id="roughPrompt" maxlength="1200" placeholder="Example: Build a landing page for a new coffee subscription..."></textarea><span class="char-count"><b id="charCount">0</b>/1200</span></div>
+            <div class="quick-start"><span>Try a spark:</span><button type="button" data-example="Plan a 7-day trip to Japan for a first-time visitor">Plan a Japan trip</button><button type="button" data-example="Create a marketing plan for a sustainable clothing brand">Marketing plan</button><button type="button" data-example="Explain quantum computing to a 12-year-old">Explain a hard idea</button></div>
+            <div class="settings-grid">
+              <div class="setting"><label for="audience">I am a...</label><div class="select-wrap"><select id="audience"><option value="everyone">Curious human</option><option value="developer">Developer</option><option value="creator">Creator / designer</option><option value="business">Business builder</option><option value="student">Student / researcher</option></select></div></div>
+              <div class="setting"><label for="output">I want an output that is...</label><div class="select-wrap"><select id="output"><option value="best">Best format for the task</option><option value="steps">Step-by-step</option><option value="detailed">Detailed and thorough</option><option value="concise">Clear and concise</option><option value="table">Organized in a table</option><option value="code">Production-ready code</option></select></div></div>
+              <div class="setting intensity-setting"><label for="depth">Magic level <span id="depthLabel">Balanced</span></label><input id="depth" type="range" min="1" max="3" value="2" /><div class="range-labels"><span>Quick</span><span>Deep</span></div></div>
+            </div>
+            <button class="generate-button" id="generateButton" type="button"><span class="button-spark">✦</span><span>Make it magical</span><kbd>⌘ ↵</kbd></button>
+            <p class="privacy-note"><span>⌁</span> Your ideas stay in this browser. Nothing is sent anywhere.</p>
+          </div>
+          <div class="output-card" id="outputCard" aria-live="polite">
+            <div class="output-top"><div><div class="output-title"><span class="step-number">02</span><h2>Your enhanced prompt</h2></div><p id="outputSubline">The good stuff will appear here.</p></div><span class="quality-pill" id="qualityPill">READY TO SPARK</span></div>
+            <div class="prompt-output empty" id="promptOutput"><div class="empty-state"><div class="orb"><span>✦</span></div><h3>A little magic awaits</h3><p>Tell us what you're trying to do.<br />We'll turn it into a prompt worth using.</p></div></div>
+            <div class="output-actions"><button class="copy-button" id="copyButton" type="button" disabled><span>⧉</span> Copy prompt</button><button class="ghost-button" id="regenerateButton" type="button" disabled><span>↻</span> Rework it</button><button class="save-button" id="saveButton" type="button" disabled aria-label="Save prompt" title="Save prompt">♡</button></div>
+          </div>
+        </section>
+        <section class="recipes" id="templates">
+          <div class="section-title"><div><span class="eyebrow">A FEW WAYS TO BEGIN</span><h2>Built for whatever you’re building.</h2></div><span class="scroll-hint">Pick a recipe <span>→</span></span></div>
+          <div class="recipe-grid">
+            <button class="recipe-card lilac" type="button" data-recipe="I need to build a responsive habit-tracking app with streaks, reminders, and a calming interface" data-audience="developer" data-output="code"><span class="recipe-icon">⌘</span><span class="recipe-arrow">↗</span><strong>Build something</strong><small>Apps, code, websites &amp; systems</small></button>
+            <button class="recipe-card peach" type="button" data-recipe="Create a content strategy for launching a handmade candle brand on social media" data-audience="creator" data-output="detailed"><span class="recipe-icon">✺</span><span class="recipe-arrow">↗</span><strong>Make it memorable</strong><small>Content, design &amp; creative ideas</small></button>
+            <button class="recipe-card mint" type="button" data-recipe="Design a simple plan to validate a new meal-prep delivery business before spending much money" data-audience="business" data-output="steps"><span class="recipe-icon">↗</span><span class="recipe-arrow">↗</span><strong>Grow an idea</strong><small>Strategy, marketing &amp; decisions</small></button>
+            <button class="recipe-card yellow" type="button" data-recipe="Help me learn the basics of machine learning and build a study plan for the next 30 days" data-audience="student" data-output="steps"><span class="recipe-icon">▣</span><span class="recipe-arrow">↗</span><strong>Learn anything</strong><small>Research, explainers &amp; study</small></button>
+          </div>
+        </section>
+        <section class="tools-section" id="tools">
+          <div class="section-title">
+            <div><span class="eyebrow">EXTRA HELP, RIGHT WHEN YOU NEED IT</span><h2>Simple AI tools for everyday work.</h2></div>
+            <span class="scroll-hint">Choose a tool <span>→</span></span>
+          </div>
+          <div class="tools-layout">
+            <div class="tool-list" role="tablist" aria-label="Quick AI tools">
+              <button class="tool-card active" type="button" role="tab" aria-selected="true" data-tool="summarize"><span class="tool-symbol">≋</span><span><strong>Quick summary</strong><small>Turn long text into the essentials</small></span><i>→</i></button>
+              <button class="tool-card" type="button" role="tab" aria-selected="false" data-tool="email"><span class="tool-symbol">✉</span><span><strong>Email helper</strong><small>Draft an email from your notes</small></span><i>→</i></button>
+              <button class="tool-card" type="button" role="tab" aria-selected="false" data-tool="code"><span class="tool-symbol">&lt;/&gt;</span><span><strong>Code clarity</strong><small>Explain a snippet in plain language</small></span><i>→</i></button>
+              <button class="tool-card" type="button" role="tab" aria-selected="false" data-tool="ideas"><span class="tool-symbol">✺</span><span><strong>Idea spark</strong><small>Generate practical angles to explore</small></span><i>→</i></button>
+            </div>
+            <div class="tool-workbench" id="toolPanel" aria-live="polite"></div>
+          </div>
+        </section>
+        <section class="recent-section" id="history"><div class="recent-heading"><span class="eyebrow">YOUR RECENT SPARKS</span><button id="clearHistory" type="button">Clear all</button></div><div class="history-list" id="historyList"><p class="no-history">Your recent prompts will show up here.</p></div></section>
+      </main>
+    </div>
+    <div class="modal-backdrop" id="helpModal" hidden><div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><button class="modal-close" id="closeHelp" type="button" aria-label="Close">×</button><span class="modal-icon">✦</span><h2 id="helpTitle">How SparkPrompt works</h2><p>Start messy. Add a little context if you have it. Choose your role and how detailed you want the result.</p><ol><li>We identify the goal, audience, and hidden decisions.</li><li>We add useful constraints and a clear output structure.</li><li>You get one polished prompt, ready to paste into any AI tool.</li></ol><button class="generate-button small-button" id="gotIt" type="button">Got it</button></div></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
