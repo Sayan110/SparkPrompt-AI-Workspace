@@ -95,7 +95,7 @@ One-time setup inside WSL (skip if `backend/.venv-linux` already exists):
 python3 -m venv .venv-linux
 source .venv-linux/bin/activate
 pip install -r requirements.txt
-pip install -r requirements-dev.txt   # optional: pytest + httpx for tests
+pip install -r requirements-dev.txt   # optional: pytest for tests (httpx already comes from requirements.txt)
 ```
 
 PostgreSQL must be running first (via `ON.bat` or section 2). If the schema has not been applied yet, run the migrations once from `backend/`:
@@ -236,8 +236,16 @@ Backend (from `backend/`, using the WSL venv):
 ```powershell
 cd backend
 pip install -r requirements-dev.txt
-pytest                       # unit + integration; DB-backed tests auto-skip when Postgres is down
+pytest                       # complete suite — requires PostgreSQL (see below)
 ```
+
+**PostgreSQL must be running and correctly configured before running the complete backend test suite** (start it with `ON.bat` or section 2, then apply migrations with `alembic -c alembic.ini upgrade head` if the schema has not been created yet). Without a database the suite does **not** pass whole:
+
+- tests marked `integration` (`backend/pytest.ini`) **skip** automatically (the `Postgres not reachable` guard in `backend/tests/conftest.py`);
+- the database-backed route/session tests **fail** instead of skipping, because no authenticated test session can be created — failures are confined to 9 route/scoring test files (`test_ai_routes`, `test_comparison_routes`, `test_evaluation_routes`, `test_evaluation_scoring`, `test_evaluation_scoring_profiles`, `test_experiments_routes`, `test_intelligence_routes`, `test_suite_routes`, `test_testing_routes`);
+- the remaining test files run fine without PostgreSQL.
+
+Verified split at the current baseline: **without** PostgreSQL → 343 passed / 195 skipped / 144 failed; **with** a running, migrated PostgreSQL → 682 passed / 0 failed.
 
 The suite (**682 tests** at the current verified baseline) covers provider registry + availability, request validation, model routing, gateway success/streaming/error paths, HTTP route behavior, SSE events (resolved defaults, latency, sanitized errors), upstream error-body non-leakage, `prompt_runs` persistence with mocked providers, the prompt-intelligence layer (contracts, strict JSON parsing, output-contract enforcement, prompt-injection defense, and AST-level guarantees that provider adapters are never imported by the intelligence package), authentication & session handling, ownership isolation, prompt versioning & restore, evaluation scoring/profiles/history, comparison/experiments/testing routes, migrations, deployment configuration, and observability (log privacy, correlation, rate limiting, readiness transitions) — no live AI keys required.
 
