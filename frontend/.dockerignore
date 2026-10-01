@@ -1,0 +1,12 @@
+# Build context hygiene for the production frontend image (Phase 4D).
+# Excludes dependencies, build output, and any local env files — local
+# environment must never be baked into an image.
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+npm-debug.log*

@@ -1,0 +1,16 @@
+# Build context hygiene for the production backend image (Phase 4D).
+# Keeps development/test/local artifacts — and any local secrets — out of the
+# image entirely.
+.venv/
+.venv-linux/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+tests/
+requirements-dev.txt
+.env
+.env.*
+*.log
+*.ini.bak

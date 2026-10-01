@@ -1,0 +1,2 @@
+# Development/test dependencies (optional; production only needs requirements.txt)
+pytest==8.3.4

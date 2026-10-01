@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sparkprompt-postgres
+    restart: unless-stopped
+    # Phase 4E (P6): bounded container logs — rotation instead of unbounded
+    # growth; driver/options only, nothing else about this service changes.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sparkprompt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sparkprompt}
+      POSTGRES_DB: ${POSTGRES_DB:-sparkprompt}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - sparkprompt_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sparkprompt} -d ${POSTGRES_DB:-sparkprompt}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sparkprompt_pgdata:

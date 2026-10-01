@@ -1,0 +1,87 @@
+# SparkPrompt reverse proxy — TLS configuration TEMPLATE (Phase 4D, Step 14).
+#
+# STATUS: DOCUMENTED / STRUCTURAL ONLY — not deployed in this environment.
+#   - No certificate exists here, and generating fake certificates is
+#     deliberately out of scope, so this file is never mounted or executed.
+#   - To deploy: obtain certificates (ACME/Let's Encrypt or your CA), mount
+#     them at /etc/nginx/certs/{tls.crt,tls.key}, replace nginx.conf with this
+#     file, and publish ports 80/443 instead of 127.0.0.1:8080 in
+#     docker-compose.prod.yml.
+#   - Certificate source, renewal, and HTTP->HTTPS redirect expectations are
+#     documented in DEPLOYMENT.md.
+#
+# Structure verified by lint (required directives present); nginx -t on this
+# file requires real certificate files and is therefore part of deployment,
+# not local validation.
+
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    # Phase 4E: rid/rt/urt/us — kept byte-identical with the active HTTP
+    # config's `main` format (infra/nginx/nginx.conf).
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for" '
+                    'rid=$request_id rt=$request_time urt=$upstream_response_time us=$upstream_status';
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    keepalive_timeout   65;
+    server_tokens       off;
+
+    upstream sparkprompt_api {
+        server api:8000;
+    }
+    upstream sparkprompt_web {
+        server web:3000;
+    }
+
+    # Plain HTTP: ACME challenges stay reachable, everything else redirects.
+    server {
+        listen 80;
+        server_name _;
+
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    # HTTPS — TLS termination happens HERE, at the proxy (Step 14).
+    server {
+        listen 443 ssl;
+        http2 on;
+        server_name _;
+
+        ssl_certificate     /etc/nginx/certs/tls.crt;
+        ssl_certificate_key /etc/nginx/certs/tls.key;
+        ssl_protocols       TLSv1.2 TLSv1.3;
+        ssl_session_cache   shared:SSL:10m;
+        ssl_session_timeout 1d;
+
+        # HSTS now actually emitted (HTTPS guaranteed on this listener);
+        # `set` must live in server/location context, never http.
+        set $sparkprompt_hsts "max-age=63072000; includeSubDomains";
+
+        # Browser-facing security headers (Step 15): HSTS is only ever set on
+        # this listener; nosniff/frame/referrer come from locations.conf.
+        add_header Strict-Transport-Security $sparkprompt_hsts always;
+
+        client_max_body_size 4m;
+
+        include /etc/nginx/locations.conf;
+    }
+}

@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, Arial, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --color-ink: #292542;
+  --color-ink-soft: #443e58;
+  --color-muted: #77728e;
+  --color-faint: #a29cac;
+  --color-paper: #f8f7fb;
+  --color-card: #ffffff;
+  --color-raised: #ffffff;
+  --color-border: #e9e6f0;
+  --color-border-strong: #d9d4e4;
+
+  --color-purple: #6f52d9;
+  --color-purple-dark: #5338ba;
+  --color-purple-soft: #ece6fb;
+  --color-purple-faint: #f5f1fd;
+
+  --color-lavender: #f0eaff;
+  --color-peach: #fff0e7;
+  --color-mint: #e5f7ee;
+  --color-yellow: #fff6cb;
+
+  --color-success: #1f8a5b;
+  --color-success-soft: #e7f6ee;
+  --color-danger: #b24343;
+  --color-danger-soft: #fdeeee;
+
+  --color-sidebar: #f3f0fa;
+  --color-overlay: rgba(35, 29, 52, 0.38);
+}
+
+.dark {
+  --color-ink: #eeebf6;
+  --color-ink-soft: #d6d1df;
+  --color-muted: #aaa5b7;
+  --color-faint: #8c8698;
+  --color-paper: #16131e;
+  --color-card: #1d1926;
+  --color-raised: #241f30;
+  --color-border: #332c42;
+  --color-border-strong: #433a56;
+
+  --color-purple-soft: #31284d;
+  --color-purple-faint: #262039;
+
+  --color-lavender: #3a2c55;
+  --color-peach: #4a302d;
+  --color-mint: #233d36;
+  --color-yellow: #4a4220;
+
+  --color-success: #3fbf8a;
+  --color-success-soft: #16342a;
+  --color-danger: #ea8686;
+  --color-danger-soft: #3a2028;
+
+  --color-sidebar: #1c1824;
+  --color-overlay: rgba(8, 6, 14, 0.55);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+textarea,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+em {
+  font-family: Georgia, serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-purple) 18%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  border-radius: 5px;
+  border: 1px solid var(--color-border-strong);
+  background: color-mix(in srgb, var(--color-card) 78%, var(--color-faint));
+  padding: 1px 6px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

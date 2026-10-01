@@ -1,0 +1,55 @@
+# Secrets and local env
+.env
+.env.local
+.env.*.local
+.env.production
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.venv-linux/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Phase 4F browser test artifacts (Playwright)
+frontend/playwright-report/
+frontend/test-results/
+frontend/e2e/.auth/
+frontend/blob-report/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local runtime
+.sparkprompt-server.pid
+*.log
+
+# Docker volumes (if ever bind-mounted here)
+infra/postgres-data/
+
+# Generated local database backups (scripts/backup-db.sh)
+backups/
