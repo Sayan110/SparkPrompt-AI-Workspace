@@ -1,5 +1,17 @@
 from __future__ import annotations
 
+# --- S1 (Phase 5B): fail-closed database-target guard -----------------------
+# Executed at conftest import time, which pytest guarantees happens before any
+# test module in this directory is imported and strictly before any fixture,
+# TestClient construction, or application engine use (app.core.database builds
+# its engine lazily — create_engine performs no I/O — and the first possible
+# connection is in a fixture or test body). No hook can run earlier inside this
+# directory, so a bare `pytest` can never reach a protected database.
+from db_target_guard import enforce_safe_database_target
+
+enforce_safe_database_target()
+# --- end S1 guard ------------------------------------------------------------
+
 import uuid
 from collections.abc import Iterator
 from http.cookiejar import Cookie
