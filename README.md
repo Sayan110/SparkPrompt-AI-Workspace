@@ -231,23 +231,35 @@ No production instance is deployed or implied by this repository.
 
 ## Testing
 
-Backend (from `backend/`, using the WSL venv):
+Backend — install the test dependencies once (from `backend/`, using the WSL venv):
 
 ```powershell
 cd backend
 pip install -r requirements-dev.txt
-pytest                       # complete suite — requires PostgreSQL (see below)
 ```
 
-**PostgreSQL must be running and correctly configured before running the complete backend test suite** (start it with `ON.bat` or section 2, then apply migrations with `alembic -c alembic.ini upgrade head` if the schema has not been created yet). Without a database the suite does **not** pass whole:
+Run the suite from the repository root with the canonical safe runner:
+
+```bash
+bash scripts/test-pytest.sh            # full mode — disposable test-database setup (see below)
+bash scripts/test-pytest.sh --dbless   # diagnostic mode only — no database; exits 10 on success
+```
+
+**Full mode** requires the PostgreSQL container `sparkprompt-postgres` to be already running — the runner never starts or stops containers (start it with `ON.bat` or section 2). It provisions and drops only the literal disposable database `sparkprompt_test` (CREATE, `alembic -c alembic.ini upgrade head`, the suite, then DROP on exit) and never touches the persistent `sparkprompt` database; server identity, ownership-token binding, count, rerun and persistent-fingerprint gates must all pass. A successful full run exits `0` only with pytest exit 0, a parseable summary, exactly **745 passed / 0 failed / 0 skipped / 0 reruns**, and an unchanged fingerprint — last verified: **745 passed, 100 warnings**.
+
+**`--dbless` is diagnostic only**: it runs the suite against an unreachable loopback target, so no database connection can succeed; success exits **10** and is explicitly **not** a full-suite pass (without PostgreSQL the suite is documented as partial).
+
+**Bare `pytest` is not the standard test command**: the committed database-target guard (`backend/tests/conftest.py`, implemented in `backend/tests/db_target_guard.py`) fails closed when `DATABASE_URL` is unset or ambiguous, or resolves to a protected database such as the development `sparkprompt`. Prefer the runner above; invoke `pytest` directly only with an explicit disposable `DATABASE_URL`.
+
+Without a database the suite does **not** pass whole:
 
 - tests marked `integration` (`backend/pytest.ini`) **skip** automatically (the `Postgres not reachable` guard in `backend/tests/conftest.py`);
 - the database-backed route/session tests **fail** instead of skipping, because no authenticated test session can be created — failures are confined to 9 route/scoring test files (`test_ai_routes`, `test_comparison_routes`, `test_evaluation_routes`, `test_evaluation_scoring`, `test_evaluation_scoring_profiles`, `test_experiments_routes`, `test_intelligence_routes`, `test_suite_routes`, `test_testing_routes`);
 - the remaining test files run fine without PostgreSQL.
 
-Verified split at the current baseline: **without** PostgreSQL → 343 passed / 195 skipped / 144 failed; **with** a running, migrated PostgreSQL → 682 passed / 0 failed.
+Verified at the current baseline: full mode (running, migrated PostgreSQL) → **745 passed / 0 failed** (100 warnings). The historical no-PostgreSQL category split is retired and no longer maintained — use `--dbless` for the no-database diagnostic run.
 
-The suite (**682 tests** at the current verified baseline) covers provider registry + availability, request validation, model routing, gateway success/streaming/error paths, HTTP route behavior, SSE events (resolved defaults, latency, sanitized errors), upstream error-body non-leakage, `prompt_runs` persistence with mocked providers, the prompt-intelligence layer (contracts, strict JSON parsing, output-contract enforcement, prompt-injection defense, and AST-level guarantees that provider adapters are never imported by the intelligence package), authentication & session handling, ownership isolation, prompt versioning & restore, evaluation scoring/profiles/history, comparison/experiments/testing routes, migrations, deployment configuration, and observability (log privacy, correlation, rate limiting, readiness transitions) — no live AI keys required.
+The suite (**745 tests** at the current verified baseline) covers provider registry + availability, request validation, model routing, gateway success/streaming/error paths, HTTP route behavior, SSE events (resolved defaults, latency, sanitized errors), upstream error-body non-leakage, `prompt_runs` persistence with mocked providers, the prompt-intelligence layer (contracts, strict JSON parsing, output-contract enforcement, prompt-injection defense, and AST-level guarantees that provider adapters are never imported by the intelligence package), authentication & session handling, ownership isolation, prompt versioning & restore, evaluation scoring/profiles/history, comparison/experiments/testing routes, migrations, deployment configuration, and observability (log privacy, correlation, rate limiting, readiness transitions) — no live AI keys required.
 
 Frontend end-to-end (from `frontend/`):
 
@@ -308,7 +320,7 @@ Verified on this environment at the completion audit — a snapshot of the state
 
 | Gate | Result |
 | --- | --- |
-| Backend suite (`pytest`) | **682 passed / 0 failed** |
+| Backend suite (`scripts/test-pytest.sh`, full mode) | **745 passed / 0 failed** (100 warnings) |
 | Live API probe | **71/71 checks** |
 | Playwright (development) | **22/22** |
 | Playwright (production proxy) | **4/4** |
